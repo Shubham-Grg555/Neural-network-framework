@@ -1,4 +1,7 @@
 class Layer:
+    """Interface or abstract thing yap
+    """
+        
     def __init__(self):
         self.input = None
         self.output = None
