@@ -30,10 +30,8 @@ def pre_process_data(x, y, start_of_batch, end_of_batch):
         numpy array and one hot encoded value: A numpy array that has been
         normalised to show float values between 0 and 1, but otherwise the
         same.
-        One-hot encoded value where it turns the correct result into an easier
-        format to say the number the ai thought was most likely e.g
-        digit 3 → [0,0,0,1,0,0,0,0,0,0] as first digit represents 0, next digit
-        represents 1 etc.
+        One-hot encoded value of the correct result of the corresponding
+        training images.
     """
     x = x.astype(np.float32) / 255.0
     x = x.reshape((x.shape[0], 28 * 28, 1))
@@ -72,14 +70,12 @@ def train(x_train, y_train, network, epochs, learning_rate):
         array between 0 and 1.
         y_train (one-hot encoded values): Correspond correct result of the
         training images.
-        network (Neural network): The neural network made e.g number of
+        network (Neural network): The custom neural network made e.g number of
         neurons, activation functions etc.
-        epochs (int): Number of epochs used to train the network. An epoch
-        means number of passes down through the whole data set e.g training
-        with with 10 images, 3 passes = 3 epoch so used the 10 images 3 times.
-        learning_rate (float): How fast the network learns (not too high so it
-        can reach the minimum point without overshooting, but not small so it
-        takes a really long time to get to the minimum point).
+        epochs (int): Number of epochs used to train the network, meaning
+        total number of passes done on the whole data set.
+        learning_rate (float): Paramter associated with how fast the network
+        learns at.
     """
     for i in range(epochs):
         error = 0
@@ -134,7 +130,5 @@ for x, y in zip(x_test, y_test):
 
     if np.argmax(output) == np.argmax(y):
         correct += 1
-
-   # print('pred:', np.argmax(output), '\ttrue:', np.argmax(y))
 
 print(f"Accuracy: {correct}/{number_of_testing_images} = {correct / number_of_testing_images:.2%}")

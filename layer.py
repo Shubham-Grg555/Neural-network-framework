@@ -1,5 +1,7 @@
 class Layer:
-    """Interface or abstract thing yap
+    """Abstract class blueprint to inherit so that everytime forward or
+    backward propagation occurs, the class that inherits this can apply the
+    needed maths during each propagation stage. 
     """
         
     def __init__(self):
@@ -21,10 +23,10 @@ class Layer:
         Solutions can then be optimised with the learning rate.
 
         Args:
-            input (_type_): input being fed into the layer
+            input (_type_): input being fed into the layer.
             output_gradient (float): Value of the derivative of the error
-            with repsect to the output of the layer
+            with repsect to the output of the layer.
             learning_rate (float): Learning rate which can be used for
-            optimising the neural network e.g gradient descent
+            optimising the neural network.
         """
         pass

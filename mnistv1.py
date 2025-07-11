@@ -1,9 +1,10 @@
 ### ONLY used tensor flow for getting dataset, processing images etc
 import tensorflow as tf
 import numpy as np
+import matplotlib.pyplot as plt
 
 from dense import Dense
-from activation import Tanh
+from activation import Tanh, ReLU
 from losses import mse, mse_gradient
 
 from keras.datasets import mnist
@@ -29,15 +30,13 @@ def pre_process_data(x, y : int, amount_of_images : int):
         numpy array and one hot encoded value: A numpy array that has been
         normalised to show float values between 0 and 1, but otherwise the
         same.
-        One-hot encoded value where it turns the correct result into an easier
-        format to say the number the ai thought was most likely e.g
-        digit 3 → [0,0,0,1,0,0,0,0,0,0] as first digit represents 0, next digit
-        represents 1 etc.
+        One-hot encoded value of the correct result of the corresponding
+        training images.
     """
     x = x.astype(np.float32) / 255.0
     x = x.reshape((x.shape[0], 28 * 28, 1))
 
-    # One-hot encode y (e.g., digit 3 → [0,0,0,1,0,0,0,0,0,0])
+    # One-hot encode y (e.g., digit 5 → [0,0,0,0,0,1,0,0,0,0])
     y = tf.keras.utils.to_categorical(y, num_classes=10)
 
     y = y.reshape((y.shape[0], 10, 1))
@@ -50,15 +49,29 @@ def predict(network, input):
         output = layer.forward(output)
     return output
 
-epochs = 10
-learning_rate = 0.001
+epochs = 3
+learning_rate = 0.01
 
 network = [
+    # Dense(28 * 28, 40),
+    # Tanh(),
+    # Dense(40, 10),
+    # Tanh()
+
     Dense(28 * 28, 40),
     Tanh(),
     Dense(40, 10),
     Tanh()
+
+    # Dense(28 * 28, 128),
+    # ReLU(),
+    # Dense(128, 64),
+    # ReLU(),
+    # Dense(64, 10),
+    # ReLU()
 ]
+
+loss_history = []
 
 def train(x_train, y_train, network, epochs, learning_rate):
     """Trains the network and corrects it by using the mean squared error to
@@ -72,14 +85,12 @@ def train(x_train, y_train, network, epochs, learning_rate):
         array between 0 and 1.
         y_train (one-hot encoded values): Correspond correct result of the
         training images.
-        network (Neural network): The neural network made e.g number of
+        network (Neural network): The custom neural network made e.g number of
         neurons, activation functions etc.
-        epochs (int): Number of epochs used to train the network. An epoch
-        means number of passes down through the whole data set e.g training
-        with with 10 images, 3 passes = 3 epoch so used the 10 images 3 times.
-        learning_rate (float): How fast the network learns (not too high so it
-        can reach the minimum point without overshooting, but not small so it
-        takes a really long time to get to the minimum point).
+        epochs (int): Number of epochs used to train the network, meaning
+        total number of passes done on the whole data set.
+        learning_rate (float): Paramter associated with how fast the network
+        learns at.
     """
     for i in range(epochs):
         error = 0
@@ -94,6 +105,7 @@ def train(x_train, y_train, network, epochs, learning_rate):
                 grad = layer.backward(grad, learning_rate)
             
             error /= len(x_train)
+        loss_history.append(error)
 
 amount_of_images = 60000
 
@@ -101,6 +113,15 @@ x_batch, y_batch = pre_process_data(x_train_full, y_train_full,
                                     amount_of_images)
 
 train(x_batch, y_batch, network, epochs, learning_rate)
+
+plt.plot(loss_history, label='Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.ylim(0,0.00006)
+plt.title('Loss vs Epoch')
+plt.legend()
+plt.grid(True)
+plt.show()
 
 number_of_testing_images = 10000
 correct = 0

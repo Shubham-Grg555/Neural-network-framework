@@ -29,7 +29,7 @@ class Tanh(Activation):
 class ReLU(Activation):
     def __init__(self):
         def ReLU(x):
-            return np.max(0, x)
+            return np.maximum(0, x)
         
         def ReLU_gradient(x):
             return np.where(x > 0, 1, 0)
